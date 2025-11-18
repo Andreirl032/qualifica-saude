@@ -2,7 +2,6 @@ import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import AuthLayout from '../layouts/AuthLayout.jsx'
 import AppLayout from '../layouts/AppLayout.jsx'
 import LoginPage from '../pages/LoginPage.jsx'
-import RegisterPage from '../pages/RegisterPage.jsx'
 import CreatePasswordPage from '../pages/CreatePasswordPage.jsx'
 import SecretaryDashboard from '../pages/SecretaryDashboard.jsx'
 import PatientHomePage from '../pages/PatientHomePage.jsx'
@@ -24,7 +23,6 @@ export default function AppRoutes() {
     <Routes>
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/criar-conta" element={<RegisterPage />} />
         <Route path="/definir-senha" element={<CreatePasswordPage />} />
       </Route>
 

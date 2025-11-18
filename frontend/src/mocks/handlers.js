@@ -17,6 +17,42 @@ const db = {
     { id: 2, filename: 'pacientes_correcao.csv', rows: 12, status: 'Sucesso', timestamp: '16/11/2025 15:21' },
     { id: 3, filename: 'lote_novembro.csv', rows: 45, status: 'Erro na validação', timestamp: '15/11/2025 18:07' },
   ],
+  patientProcedures: [
+    {
+      id: 'proc1',
+      patientId: 'u1',
+      name: 'Cirurgia de joelho direito',
+      date: '20/11/2025 08:00',
+      facility: 'Hospital Municipal Demo',
+      status: 'pendente-documentos',
+      requiredDocuments: [
+        { id: 'doc1', name: 'Risco cirúrgico', status: 'pendente', type: 'pdf' },
+        { id: 'doc2', name: 'Exame de sangue recente', status: 'aprovado', type: 'pdf' },
+      ],
+    },
+    {
+      id: 'proc2',
+      patientId: 'u1',
+      name: 'Endoscopia digestiva',
+      date: '25/11/2025 14:30',
+      facility: 'Clínica Especializada Demo',
+      status: 'agendado',
+      requiredDocuments: [
+        { id: 'doc3', name: 'Consentimento informado assinado', status: 'pendente', type: 'pdf' },
+      ],
+    },
+    {
+      id: 'proc3',
+      patientId: 'u1',
+      name: 'Consulta de retorno',
+      date: '10/12/2025 10:00',
+      facility: 'Ambulatório Demo',
+      status: 'completo',
+      requiredDocuments: [
+        { id: 'doc4', name: 'Relatório de alta', status: 'aprovado', type: 'pdf' },
+      ],
+    },
+  ],
 }
 
 function makeToken(prefix, userId) {
@@ -177,5 +213,48 @@ export const handlers = [
   http.get('/secretary/csv-history', async () => {
     await delay(200)
     return HttpResponse.json({ data: db.csvHistory })
+  }),
+
+  // Lista de procedimentos do paciente logado
+  http.get('/patient/procedures', async ({ request }) => {
+    await delay(250)
+    const auth = request.headers.get('authorization') || ''
+    if (!auth.startsWith('Bearer access.')) {
+      return HttpResponse.json({ message: 'Não autorizado' }, { status: 401 })
+    }
+    // Para simplificar, sempre usamos o paciente u1
+    const procedures = db.patientProcedures.filter((p) => p.patientId === 'u1')
+    return HttpResponse.json({ data: procedures })
+  }),
+
+  // Upload de documento do paciente
+  http.post('/patient/procedures/:procedureId/documents/:documentId/upload', async ({ params, request }) => {
+    await delay(400)
+    const auth = request.headers.get('authorization') || ''
+    if (!auth.startsWith('Bearer access.')) {
+      return HttpResponse.json({ message: 'Não autorizado' }, { status: 401 })
+    }
+    const { procedureId, documentId } = params
+    const body = await request.json()
+    const procedure = db.patientProcedures.find((p) => p.id === procedureId)
+    if (!procedure) {
+      return HttpResponse.json({ message: 'Procedimento não encontrado' }, { status: 404 })
+    }
+    const doc = procedure.requiredDocuments.find((d) => d.id === documentId)
+    if (!doc) {
+      return HttpResponse.json({ message: 'Documento não encontrado' }, { status: 404 })
+    }
+    if (!body || !body.fileName) {
+      return HttpResponse.json({ message: 'Arquivo inválido' }, { status: 400 })
+    }
+    doc.status = 'enviado'
+    doc.lastUpload = {
+      fileName: body.fileName,
+      uploadedAt: new Date().toISOString(),
+    }
+    if (procedure.requiredDocuments.every((d) => d.status === 'aprovado' || d.status === 'enviado')) {
+      procedure.status = 'aguardando-analise'
+    }
+    return HttpResponse.json({ ok: true, procedure })
   }),
 ]
