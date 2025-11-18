@@ -8,8 +8,8 @@ export async function loginByCpf({ cpf, password }) {
   return post('/auth/login-cpf', { cpf, password })
 }
 
-export async function requestOtp({ cpf }) {
-  return post('/auth/request-otp', { cpf })
+export async function requestOtp({ cpf, email }) {
+  return post('/auth/request-otp', { cpf, email })
 }
 
 export async function setPassword(payload) {

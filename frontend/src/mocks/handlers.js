@@ -72,6 +72,18 @@ function findUserByCpf(cpf) {
   return db.users.find((u) => normalizeCpf(u.cpf) === normalized)
 }
 
+function maskEmail(email = '') {
+  if (!email || typeof email !== 'string' || !email.includes('@')) return email
+  const [local, domain] = email.split('@')
+  if (local.length <= 3) {
+    const first = local[0] ?? ''
+    return `${first}***@${domain}`
+  }
+  const first = local[0]
+  const last3 = local.slice(-3)
+  return `${first}*****${last3}@${domain}`
+}
+
 function issueTokens(user) {
   const accessToken = makeToken('access', user.id)
   const refreshToken = makeToken('refresh', user.id)
@@ -148,12 +160,13 @@ export const handlers = [
     }
     const code = (Math.floor(100000 + Math.random() * 900000)).toString()
     db.otps.set(normalizeCpf(body.cpf), { code, expiresAt: Date.now() + OTP_EXPIRATION_MS })
+    const emailToMask = body.email || user.email
     return HttpResponse.json({
       ok: true,
       hasPassword: Boolean(user.password),
       expiresInSeconds: OTP_EXPIRATION_MS / 1000,
       otpPreview: code,
-      contactHint: user.phoneHint,
+      contactHint: maskEmail(emailToMask),
     })
   }),
 

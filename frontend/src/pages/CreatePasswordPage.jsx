@@ -7,6 +7,7 @@ import * as authService from '../services/authService.js'
 
 const requestSchema = z.object({
   cpf: z.string().min(11, 'Informe um CPF válido').regex(/^[0-9.-]+$/, 'Apenas números e pontuação'),
+  email: z.string().email('Informe um e-mail válido'),
 })
 
 const defineSchema = z.object({
@@ -31,23 +32,27 @@ export default function CreatePasswordPage() {
   const [activeCpf, setActiveCpf] = useState(initialCpf)
   const [otpPreview, setOtpPreview] = useState('')
   const [contactHint, setContactHint] = useState('')
+  const [canRequestOtp, setCanRequestOtp] = useState(false)
 
-  const { register: registerRequest, handleSubmit: handleRequestSubmit, formState: { errors: requestErrors, isSubmitting: requesting }, reset: resetRequest } = useForm({
+  const { register: registerRequest, handleSubmit: handleRequestSubmit, formState: { errors: requestErrors, isSubmitting: requesting }, reset: resetRequest, watch: watchRequest } = useForm({
     resolver: zodResolver(requestSchema),
-    defaultValues: { cpf: initialCpf },
+    defaultValues: { cpf: initialCpf, email: '' },
   })
 
   const { register: registerDefine, handleSubmit: handleDefineSubmit, formState: { errors: defineErrors, isSubmitting: defining }, reset: resetDefine } = useForm({
     resolver: zodResolver(defineSchema),
   })
 
+  const watchedEmail = watchRequest('email')
+
   const requestOtp = handleRequestSubmit(async (values) => {
     try {
       const cpf = sanitizeCpf(values.cpf)
-      const response = await authService.requestOtp({ cpf })
+      const response = await authService.requestOtp({ cpf, email: values.email })
       setActiveCpf(cpf)
       setOtpPreview(response.otpPreview)
       setContactHint(response.contactHint)
+      setCanRequestOtp(true)
       setStep('define')
       resetDefine()
       window.alert(`Código enviado: ${response.otpPreview}`)
@@ -69,11 +74,12 @@ export default function CreatePasswordPage() {
 
   const startOver = () => {
     setStep('request')
-    resetRequest({ cpf: '' })
+    resetRequest({ cpf: '', email: '' })
     resetDefine()
     setOtpPreview('')
     setContactHint('')
     setActiveCpf('')
+    setCanRequestOtp(false)
   }
 
   return (
@@ -90,7 +96,27 @@ export default function CreatePasswordPage() {
             <input className={`input input-bordered ${requestErrors.cpf ? 'input-error' : ''}`} placeholder="000.000.000-00" maxLength={14} {...registerRequest('cpf')} />
             {requestErrors.cpf && <span className="text-error text-sm">{requestErrors.cpf.message}</span>}
           </label>
-          <button className={`btn btn-primary w-full ${requesting ? 'loading' : ''}`} disabled={requesting}>
+          <label className="form-control">
+            <div className="label">
+              <span className="label-text">
+                Informe o e-mail cadastrado {contactHint || 'do paciente'} para enviarmos o código de confirmação:
+              </span>
+            </div>
+            <input
+              type="email"
+              className={`input input-bordered ${requestErrors.email ? 'input-error' : ''}`}
+              placeholder="seuemail@exemplo.com"
+              {...registerRequest('email')}
+            />
+            {requestErrors.email && (
+              <span className="text-error text-sm">{requestErrors.email.message}</span>
+            )}
+          </label>
+          <button
+            className={`btn btn-primary w-full ${requesting ? 'loading' : ''}`}
+            type="submit"
+            disabled={requesting || !watchedEmail || !canRequestOtp}
+          >
             {requesting ? 'Enviando código...' : 'Receber código por e-mail'}
           </button>
           <p className="text-center text-sm">
@@ -114,7 +140,7 @@ export default function CreatePasswordPage() {
           <p className="text-sm text-base-content/70">Informe o código recebido e escolha uma senha segura.</p>
 
           <label className="form-control">
-            <div className="label"><span className="label-text">Código SMS</span></div>
+            <div className="label"><span className="label-text">Código</span></div>
             <input className={`input input-bordered ${defineErrors.otp ? 'input-error' : ''}`} placeholder="123456" maxLength={6} {...registerDefine('otp')} />
             {defineErrors.otp && <span className="text-error text-sm">{defineErrors.otp.message}</span>}
           </label>

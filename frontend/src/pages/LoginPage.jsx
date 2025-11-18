@@ -126,7 +126,7 @@ export default function LoginPage() {
             {isSubmittingCpf ? 'Validando...' : 'Entrar com CPF'}
           </button>
           <button type="button" className="btn btn-link w-full" onClick={goToPasswordSetup}>
-            Criar ou redefinir senha com código SMS (mock)
+            Criar ou redefinir senha com código (mock)
           </button>
         </form>
       )}
