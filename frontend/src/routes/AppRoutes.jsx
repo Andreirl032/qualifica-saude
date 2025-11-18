@@ -3,6 +3,7 @@ import AuthLayout from '../layouts/AuthLayout.jsx'
 import AppLayout from '../layouts/AppLayout.jsx'
 import LoginPage from '../pages/LoginPage.jsx'
 import RegisterPage from '../pages/RegisterPage.jsx'
+import CreatePasswordPage from '../pages/CreatePasswordPage.jsx'
 import SecretaryDashboard from '../pages/SecretaryDashboard.jsx'
 import PatientHomePage from '../pages/PatientHomePage.jsx'
 import ProfessionalHomePage from '../pages/ProfessionalHomePage.jsx'
@@ -24,6 +25,7 @@ export default function AppRoutes() {
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/criar-conta" element={<RegisterPage />} />
+        <Route path="/definir-senha" element={<CreatePasswordPage />} />
       </Route>
 
       <Route element={<RequireAuth />}>

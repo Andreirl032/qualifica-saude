@@ -35,6 +35,12 @@ export function AuthProvider({ children }) {
     return resp.user
   }, [persist])
 
+  const loginWithCpf = useCallback(async ({ cpf, password }) => {
+    const resp = await authService.loginByCpf({ cpf, password })
+    persist({ user: resp.user, accessToken: resp.accessToken, refreshToken: resp.refreshToken })
+    return resp.user
+  }, [persist])
+
   const register = useCallback(async (payload) => {
     const resp = await authService.register(payload)
     return resp
@@ -54,11 +60,12 @@ export function AuthProvider({ children }) {
     refreshToken: auth.refreshToken,
     isAuthenticated,
     login,
+    loginWithCpf,
     register,
     logout,
     setTokens,
     getTokens,
-  }), [auth, getTokens, isAuthenticated, login, logout, register, setTokens])
+  }), [auth, getTokens, isAuthenticated, login, loginWithCpf, logout, register, setTokens])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
