@@ -8,6 +8,11 @@ const db = {
     { id: 'u3', name: 'Augusto Secretário', email: 'secretario@demo.com', role: 'secretario', password: '123456' },
   ],
   tokens: new Map(), // refreshToken -> { userId, accessToken }
+  csvHistory: [
+    { id: 1, filename: 'pacientes_2025-11-17.csv', rows: 32, status: 'Sucesso', timestamp: '17/11/2025 09:42' },
+    { id: 2, filename: 'pacientes_correcao.csv', rows: 12, status: 'Sucesso', timestamp: '16/11/2025 15:21' },
+    { id: 3, filename: 'lote_novembro.csv', rows: 45, status: 'Erro na validação', timestamp: '15/11/2025 18:07' },
+  ],
 }
 
 function makeToken(prefix, userId) {
@@ -19,7 +24,7 @@ function findUserByEmail(email) {
 }
 
 function publicUser(u) {
-  const { password, ...rest } = u
+  const { password: _password, ...rest } = u
   return rest
 }
 
@@ -77,5 +82,10 @@ export const handlers = [
       return HttpResponse.json({ message: 'Status inválido' }, { status: 400 })
     }
     return HttpResponse.json({ ok: true, id, ...body })
+  }),
+
+  http.get('/secretary/csv-history', async () => {
+    await delay(200)
+    return HttpResponse.json({ data: db.csvHistory })
   }),
 ]
