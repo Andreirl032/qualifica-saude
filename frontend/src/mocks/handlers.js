@@ -53,6 +53,64 @@ const db = {
       ],
     },
   ],
+  professionalDocuments: [
+    {
+      id: 'doc-101',
+      patientName: 'Andrei Paciente',
+      patientCpf: '123.123.123-12',
+      procedureName: 'Cirurgia de joelho direito',
+      documentName: 'Risco cirúrgico',
+      status: 'pendente',
+      receivedAt: '2025-11-16T09:10:00',
+      lastUpdate: '2025-11-16T09:10:00',
+      attachments: [{ fileName: 'risco-cirurgico.pdf', url: '#' }],
+      notes: 'Paciente relata alergia a analgésicos. Avaliar laudo.',
+      pendingReason: 'Documento obrigatório antes do agendamento',
+      priority: 'alta',
+    },
+    {
+      id: 'doc-102',
+      patientName: 'Carla Souza',
+      patientCpf: '555.444.333-22',
+      procedureName: 'Endoscopia digestiva',
+      documentName: 'Consentimento informado',
+      status: 'pendente',
+      receivedAt: '2025-11-15T14:35:00',
+      lastUpdate: '2025-11-17T08:05:00',
+      attachments: [{ fileName: 'consentimento.pdf', url: '#' }],
+      notes: 'Revisar assinatura do responsável.',
+      pendingReason: 'Assinatura pouco legível no rodapé',
+      priority: 'media',
+    },
+    {
+      id: 'doc-103',
+      patientName: 'Luan Pereira',
+      patientCpf: '987.654.321-00',
+      procedureName: 'Tomografia computadorizada',
+      documentName: 'Exame de creatinina',
+      status: 'aprovado',
+      receivedAt: '2025-11-10T10:15:00',
+      lastUpdate: '2025-11-10T11:00:00',
+      attachments: [{ fileName: 'creatinina.pdf', url: '#' }],
+      notes: 'Resultado dentro da faixa.',
+      pendingReason: null,
+      priority: 'baixa',
+    },
+    {
+      id: 'doc-104',
+      patientName: 'Marta Oliveira',
+      patientCpf: '321.654.987-00',
+      procedureName: 'Consulta pré-operatória',
+      documentName: 'Lista de medicamentos',
+      status: 'rejeitado',
+      receivedAt: '2025-11-12T16:20:00',
+      lastUpdate: '2025-11-13T09:40:00',
+      attachments: [{ fileName: 'medicamentos.docx', url: '#' }],
+      notes: 'Anexado documento ilegível. Solicitar novo upload.',
+      pendingReason: null,
+      priority: 'baixa',
+    },
+  ],
 }
 
 function makeToken(prefix, userId) {
@@ -251,6 +309,15 @@ export const handlers = [
     // Para simplificar, sempre usamos o paciente u1
     const procedures = db.patientProcedures.filter((p) => p.patientId === 'u1')
     return HttpResponse.json({ data: procedures })
+  }),
+
+  http.get('/professional/documents', async ({ request }) => {
+    await delay(220)
+    const auth = request.headers.get('authorization') || ''
+    if (!auth.startsWith('Bearer access.')) {
+      return HttpResponse.json({ message: 'Não autorizado' }, { status: 401 })
+    }
+    return HttpResponse.json({ data: db.professionalDocuments })
   }),
 
   // Upload de documento do paciente

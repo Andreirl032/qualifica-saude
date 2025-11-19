@@ -13,3 +13,8 @@ export async function uploadPatientDocument(procedureId, documentId, fileName) {
   const response = await post(`/patient/procedures/${procedureId}/documents/${documentId}/upload`, { fileName })
   return response.procedure
 }
+
+export async function getProfessionalDocuments() {
+  const response = await get('/professional/documents')
+  return response.data ?? []
+}
