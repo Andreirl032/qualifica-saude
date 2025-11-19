@@ -83,7 +83,7 @@ export default function PatientHomePage() {
       setUploadingId(`${procedureId}:${documentId}`)
       const updated = await uploadPatientDocument(procedureId, documentId, mockFileName)
       setProcedures((prev) => prev.map((p) => (p.id === updated.id ? updated : p)))
-      window.alert('Documento enviado com sucesso! Agora ele aparecerá para a equipe validar.')
+      window.alert('Documento enviado com sucesso! Será analisado pela equipe em breve.')
     } catch (e) {
       window.alert(e?.response?.data?.message || e.message || 'Falha ao enviar documento.')
     } finally {

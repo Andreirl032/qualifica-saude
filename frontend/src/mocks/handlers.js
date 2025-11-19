@@ -306,7 +306,6 @@ export const handlers = [
     if (!auth.startsWith('Bearer access.')) {
       return HttpResponse.json({ message: 'Não autorizado' }, { status: 401 })
     }
-    // Para simplificar, sempre usamos o paciente u1
     const procedures = db.patientProcedures.filter((p) => p.patientId === 'u1')
     return HttpResponse.json({ data: procedures })
   }),

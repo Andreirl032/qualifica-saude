@@ -2,9 +2,13 @@
 
 ## Frontend
 
-- **Stack**: Vite (CRA obsoleto) com DaisyUI/Tailwind 4 facilitam desenvolvimento e estilização. Mock Service Worker simula a API enquanto o backend não existe.
+- **Stack**: Vite (CRA está obsoleto) com DaisyUI/Tailwind 4 facilitam desenvolvimento e estilização. Mock Service Worker simula a API enquanto o backend não existe. A pasta Services pode ter reuso posterior para os endpoints do backend.
 - **Formulários**: `react-hook-form` + `zod` validam CPF, e-mail, OTP e senhas com schemas reutilizáveis.
 - **Painéis mockados**: páginas de paciente, profissional e secretário consomem `documentService`/`secretaryService` mockados para procedimentos, qualificação e import/export de CSV.
+
+### Importante!
+
+A pasta Mocks é somente usada enquanto não houver backend disponível. Além disso, o MSW funciona somente em ambiente de desenvolvimento (`npm run dev`).
 
 ### Como executar na sua máquina
 

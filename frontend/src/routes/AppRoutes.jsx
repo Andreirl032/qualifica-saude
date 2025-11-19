@@ -11,13 +11,14 @@ import RequireAuth from './guards/RequireAuth.jsx'
 import RequireRole from './guards/RequireRole.jsx'
 import { useAuth } from '../hooks/useAuth.js'
 
+// Componente para redirecionar o usuário autenticado para sua página inicial com base no papel
 function HomeRedirect() {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" replace />
   const map = { secretario: '/secretario', paciente: '/paciente', profissional: '/profissional' }
   return <Navigate to={map[user.role] || '/login'} replace />
 }
-
+// Rotas da aplicação
 export default function AppRoutes() {
   return (
     <Routes>

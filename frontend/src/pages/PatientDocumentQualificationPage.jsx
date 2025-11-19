@@ -29,13 +29,13 @@ export default function PatientDocumentQualificationPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6 flex flex-col items-center">
       <PageHeader
         align="left"
         title={`Qualificação de Documento ${documentoId ? `#${documentoId}` : ''}`}
         subtitle="Atualize o status do documento e registre observações clínicas."
       />
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 flex flex-col items-center">
         <FormField label="Status" error={errors.status?.message}>
           <select className="select select-bordered" {...register('status')}>
             <option value="aprovado">Aprovado</option>

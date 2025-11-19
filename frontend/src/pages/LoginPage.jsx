@@ -8,6 +8,7 @@ import { PageHeader } from '../components/PageHeader.jsx'
 import { FormField } from '../components/FormField.jsx'
 import { Button } from '../components/Button.jsx'
 
+// Schemas de validação para login
 const secretarySchema = z.object({
   email: z.string().email('E-mail inválido'),
   password: z.string().min(6, 'Mínimo 6 caracteres'),
@@ -18,6 +19,7 @@ const cpfSchema = z.object({
   password: z.string().min(6, 'Mínimo 6 caracteres'),
 })
 
+// Mapeamento de papéis para rotas iniciais
 const rolePaths = { secretario: '/secretario', paciente: '/paciente', profissional: '/profissional' }
 
 function sanitizeCpf(value = '') {
@@ -29,7 +31,7 @@ function getErrorMessage(error) {
 }
 
 export default function LoginPage() {
-  const [mode, setMode] = useState('secretario')
+  const [mode, setMode] = useState('cpf')
   const auth = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -94,7 +96,7 @@ export default function LoginPage() {
           Paciente / Profissional
         </button>
       </div>
-
+      {/* Formulário de login do secretário */}
       {mode === 'secretario' && (
         <form onSubmit={handleSecretaryLogin} className="space-y-4">
           <FormField label="E-mail" error={errors.email?.message}>
@@ -118,7 +120,7 @@ export default function LoginPage() {
           </Button>
         </form>
       )}
-
+      {/* Formulário de login do paciente/profissional */}
       {mode === 'cpf' && (
         <form onSubmit={handleCpfLogin} className="space-y-4">
           <FormField label="CPF" error={cpfErrors.cpf?.message}>
