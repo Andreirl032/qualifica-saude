@@ -2,7 +2,7 @@
 
 ## Frontend
 
-- **Stack**: Vite (CRA depreciado) com DaisyUI/Tailwind 4 garante build rápido e design system coeso. Mock Service Worker simula a API enquanto o backend não existe.
+- **Stack**: Vite (CRA obsoleto) com DaisyUI/Tailwind 4 facilitam desenvolvimento e estilização. Mock Service Worker simula a API enquanto o backend não existe.
 - **Formulários**: `react-hook-form` + `zod` validam CPF, e-mail, OTP e senhas com schemas reutilizáveis.
 - **Painéis mockados**: páginas de paciente, profissional e secretário consomem `documentService`/`secretaryService` mockados para procedimentos, qualificação e import/export de CSV.
 
