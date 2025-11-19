@@ -6,11 +6,9 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="navbar bg-base-700 shadow">
-        <div className="flex-1">
-          <Link to="/" className="btn btn-ghost text-xl">Qualifica Saúde</Link>
-        </div>
-        <div className="flex items-center gap-2">
+      <div className="navbar bg-base-700 shadow flex relative">
+          <Link to="/" className="btn btn-ghost text-xl absolute left-1/2 transform -translate-x-1/2">Qualifica Saúde</Link>
+        <div className="flex items-center gap-3 ml-auto mr-5">
           {user && (
             <span className="badge badge-outline capitalize">{user.role}</span>
           )}
