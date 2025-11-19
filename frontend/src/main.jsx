@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 
-// Coloca os mocks no modo dev
+// Coloca os mocks no modo dev, é útil para desenvolvimento sem backend, tirar depois que o backend estiver pronto
 async function enableMocks() {
   if (import.meta.env.DEV && import.meta.env.VITE_USE_MOCKS !== 'false') {
     const { worker } = await import('./mocks/browser.js')
