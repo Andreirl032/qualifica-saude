@@ -96,7 +96,7 @@ export default function LoginPage() {
         <form onSubmit={handleSecretaryLogin} className="space-y-4">
           <label className="form-control">
             <div className="label"><span className="label-text">E-mail</span></div>
-            <input type="email" className={`input input-bordered ${errors.email ? 'input-error' : ''}`} placeholder="secretario@demo.com" {...register('email')} />
+            <input type="email" className={`input input-bordered ${errors.email ? 'input-error' : ''}`} placeholder="contato@email.com" {...register('email')} />
             {errors.email && <span className="text-error text-sm">{errors.email.message}</span>}
           </label>
           <label className="form-control">
@@ -126,7 +126,7 @@ export default function LoginPage() {
             {isSubmittingCpf ? 'Validando...' : 'Entrar com CPF'}
           </button>
           <button type="button" className="btn btn-link w-full" onClick={goToPasswordSetup}>
-            Criar ou redefinir senha com código (mock)
+            Criar ou redefinir senha
           </button>
         </form>
       )}

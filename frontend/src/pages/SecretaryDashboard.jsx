@@ -41,10 +41,6 @@ export default function SecretaryDashboard() {
     <div className="space-y-6">
       <header className="space-y-1">
         <h1 className="text-2xl font-semibold">Painel do Secretário</h1>
-        <p className="text-base-content/70">
-          Enquanto o backend não está pronto, utilize os botões abaixo para simular a importação e exportação
-          de arquivos CSV com a lista de pacientes que irão registrar procedimentos.
-        </p>
       </header>
 
       <div className="card bg-base-100 shadow">

@@ -150,6 +150,19 @@ export const handlers = [
     return HttpResponse.json({ ok: true })
   }),
 
+  http.post('/auth/contact-hint', async ({ request }) => {
+    const body = await request.json()
+    await delay(200)
+    const user = findUserByCpf(body.cpf)
+    if (!user || user.role === 'secretario') {
+      return HttpResponse.json({ message: 'CPF não encontrado para este fluxo' }, { status: 404 })
+    }
+    return HttpResponse.json({
+      ok: true,
+      contactHint: maskEmail(user.email),
+    })
+  }),
+
   // Request OTP
   http.post('/auth/request-otp', async ({ request }) => {
     const body = await request.json()

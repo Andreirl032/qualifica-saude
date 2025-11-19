@@ -8,6 +8,10 @@ export async function loginByCpf({ cpf, password }) {
   return post('/auth/login-cpf', { cpf, password })
 }
 
+export async function getContactHint({ cpf }) {
+  return post('/auth/contact-hint', { cpf })
+}
+
 export async function requestOtp({ cpf, email }) {
   return post('/auth/request-otp', { cpf, email })
 }

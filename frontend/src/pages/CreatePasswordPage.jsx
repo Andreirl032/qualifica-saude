@@ -5,8 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import * as authService from '../services/authService.js'
 
-const requestSchema = z.object({
+const cpfSchema = z.object({
   cpf: z.string().min(11, 'Informe um CPF válido').regex(/^[0-9.-]+$/, 'Apenas números e pontuação'),
+})
+
+const emailSchema = z.object({
   email: z.string().email('Informe um e-mail válido'),
 })
 
@@ -32,27 +35,43 @@ export default function CreatePasswordPage() {
   const [activeCpf, setActiveCpf] = useState(initialCpf)
   const [otpPreview, setOtpPreview] = useState('')
   const [contactHint, setContactHint] = useState('')
-  const [canRequestOtp, setCanRequestOtp] = useState(false)
+  const [cpfConfirmed, setCpfConfirmed] = useState(Boolean(initialCpf))
 
-  const { register: registerRequest, handleSubmit: handleRequestSubmit, formState: { errors: requestErrors, isSubmitting: requesting }, reset: resetRequest, watch: watchRequest } = useForm({
-    resolver: zodResolver(requestSchema),
-    defaultValues: { cpf: initialCpf, email: '' },
+  const { register: registerCpf, handleSubmit: handleCpfSubmit, formState: { errors: cpfErrors, isSubmitting: confirmingCpf }, reset: resetCpf } = useForm({
+    resolver: zodResolver(cpfSchema),
+    defaultValues: { cpf: initialCpf },
+  })
+
+  const { register: registerEmail, handleSubmit: handleEmailSubmit, formState: { errors: emailErrors, isSubmitting: requesting }, reset: resetEmail, watch: watchEmail } = useForm({
+    resolver: zodResolver(emailSchema),
+    defaultValues: { email: '' },
   })
 
   const { register: registerDefine, handleSubmit: handleDefineSubmit, formState: { errors: defineErrors, isSubmitting: defining }, reset: resetDefine } = useForm({
     resolver: zodResolver(defineSchema),
   })
 
-  const watchedEmail = watchRequest('email')
+  const watchedEmail = watchEmail('email')
 
-  const requestOtp = handleRequestSubmit(async (values) => {
+  const confirmCpf = handleCpfSubmit(async (values) => {
     try {
       const cpf = sanitizeCpf(values.cpf)
-      const response = await authService.requestOtp({ cpf, email: values.email })
+      const response = await authService.getContactHint({ cpf })
       setActiveCpf(cpf)
+      setContactHint(response.contactHint)
+      setCpfConfirmed(true)
+      resetEmail({ email: '' })
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message || 'Falha ao buscar contato.'
+      window.alert(message)
+    }
+  })
+
+  const requestOtp = handleEmailSubmit(async (values) => {
+    try {
+      const response = await authService.requestOtp({ cpf: activeCpf, email: values.email })
       setOtpPreview(response.otpPreview)
       setContactHint(response.contactHint)
-      setCanRequestOtp(true)
       setStep('define')
       resetDefine()
       window.alert(`Código enviado: ${response.otpPreview}`)
@@ -74,12 +93,13 @@ export default function CreatePasswordPage() {
 
   const startOver = () => {
     setStep('request')
-    resetRequest({ cpf: '', email: '' })
+    resetCpf({ cpf: '' })
+    resetEmail({ email: '' })
     resetDefine()
     setOtpPreview('')
     setContactHint('')
     setActiveCpf('')
-    setCanRequestOtp(false)
+    setCpfConfirmed(false)
   }
 
   return (
@@ -90,39 +110,50 @@ export default function CreatePasswordPage() {
       </div>
 
       {step === 'request' && (
-        <form className="space-y-4" onSubmit={requestOtp}>
-          <label className="form-control">
-            <div className="label"><span className="label-text">CPF</span></div>
-            <input className={`input input-bordered ${requestErrors.cpf ? 'input-error' : ''}`} placeholder="000.000.000-00" maxLength={14} {...registerRequest('cpf')} />
-            {requestErrors.cpf && <span className="text-error text-sm">{requestErrors.cpf.message}</span>}
-          </label>
-          <label className="form-control">
-            <div className="label">
-              <span className="label-text">
-                Informe o e-mail cadastrado {contactHint || 'do paciente'} para enviarmos o código de confirmação:
-              </span>
-            </div>
-            <input
-              type="email"
-              className={`input input-bordered ${requestErrors.email ? 'input-error' : ''}`}
-              placeholder="seuemail@exemplo.com"
-              {...registerRequest('email')}
-            />
-            {requestErrors.email && (
-              <span className="text-error text-sm">{requestErrors.email.message}</span>
-            )}
-          </label>
-          <button
-            className={`btn btn-primary w-full ${requesting ? 'loading' : ''}`}
-            type="submit"
-            disabled={requesting || !watchedEmail || !canRequestOtp}
-          >
-            {requesting ? 'Enviando código...' : 'Receber código por e-mail'}
-          </button>
+        <div className="space-y-4">
+          <form className="space-y-4" onSubmit={confirmCpf}>
+            <label className="form-control">
+              <div className="label"><span className="label-text">CPF</span></div>
+              <input className={`input input-bordered ${cpfErrors.cpf ? 'input-error' : ''}`} placeholder="000.000.000-00" maxLength={14} {...registerCpf('cpf')} />
+              {cpfErrors.cpf && <span className="text-error text-sm">{cpfErrors.cpf.message}</span>}
+            </label>
+            <button className={`btn btn-secondary w-full ${confirmingCpf ? 'loading' : ''}`} disabled={confirmingCpf}>
+              {confirmingCpf ? 'Buscando contato...' : 'Continuar'}
+            </button>
+          </form>
+
+          {cpfConfirmed && contactHint && (
+            <form className="space-y-4" onSubmit={requestOtp}>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text">
+                    Informe o e-mail cadastrado {contactHint} para enviarmos o código de confirmação:
+                  </span>
+                </div>
+                <input
+                  type="email"
+                  className={`input input-bordered ${emailErrors.email ? 'input-error' : ''}`}
+                  placeholder="seuemail@exemplo.com"
+                  {...registerEmail('email')}
+                />
+                {emailErrors.email && (
+                  <span className="text-error text-sm">{emailErrors.email.message}</span>
+                )}
+              </label>
+              <button
+                className={`btn btn-primary w-full ${requesting ? 'loading' : ''}`}
+                type="submit"
+                disabled={requesting || !watchedEmail}
+              >
+                {requesting ? 'Enviando código...' : 'Receber código por e-mail'}
+              </button>
+            </form>
+          )}
+
           <p className="text-center text-sm">
             Já tem senha? <Link to="/login" className="link">Voltar para login</Link>
           </p>
-        </form>
+        </div>
       )}
 
       {step === 'define' && (
