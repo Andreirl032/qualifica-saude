@@ -1,16 +1,39 @@
-# React + Vite
+# Qualifica Saúde
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Frontend
 
-Currently, two official plugins are available:
+- **Stack**: Vite (CRA depreciado) com DaisyUI/Tailwind 4 garante build rápido e design system coeso. Mock Service Worker simula a API enquanto o backend não existe.
+- **Formulários**: `react-hook-form` + `zod` validam CPF, e-mail, OTP e senhas com schemas reutilizáveis.
+- **Painéis mockados**: páginas de paciente, profissional e secretário consomem `documentService`/`secretaryService` mockados para procedimentos, qualificação e import/export de CSV.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Como executar na sua máquina
 
-## React Compiler
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Estrutura de pastas
 
-## Expanding the ESLint configuration
+```
+frontend/
+├─ src/
+│  ├─ components/     
+│  ├─ pages/          
+│  ├─ services/       # authService, documentService, secretaryService
+│  ├─ mocks/          # Onde fica a lógica por trás do MSW
+│  └─ context/         # AuthContext
+|  └─ hooks/          # useAuth
+└─ public/            # assets estáticos
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Fluxos principais
+
+- **Login**: suporta credenciais por e-mail (secretário) e CPF (pacientes/profissionais) com fallback para criação de senha quando necessário.
+- **Definir primeira senha**: fluxo em etapas (CPF → e-mail mascarado → OTP → senha) para confirmar identidade antes do primeiro acesso.
+- **Painéis mockados**: paciente gerencia documentos/procedimentos; profissional acessa a tela de qualificação; secretário simula import/export de CSV e acompanha histórico.
+
+### Próximo passo
+
+Conectar os serviços ao backend real assim que os endpoints estiverem disponíveis.

@@ -6,7 +6,7 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="navbar bg-base-100 shadow">
+      <div className="navbar bg-base-700 shadow">
         <div className="flex-1">
           <Link to="/" className="btn btn-ghost text-xl">Qualifica Saúde</Link>
         </div>

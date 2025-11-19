@@ -4,6 +4,10 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import * as authService from '../services/authService.js'
+import { FormField } from '../components/FormField.jsx'
+import { Alert } from '../components/Alert.jsx'
+import { PageHeader } from '../components/PageHeader.jsx'
+import { Button } from '../components/Button.jsx'
 
 const cpfSchema = z.object({
   cpf: z.string().min(11, 'Informe um CPF válido').regex(/^[0-9.-]+$/, 'Apenas números e pontuação'),
@@ -104,49 +108,55 @@ export default function CreatePasswordPage() {
 
   return (
     <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-semibold">Definir primeira senha</h2>
-        <p className="text-base-content/70">Usamos um código de uso único para garantir que apenas o titular do CPF conclua o cadastro.</p>
-      </div>
+      <PageHeader
+        title="Definir primeira senha"
+        subtitle="Usamos um código de uso único para garantir que apenas o titular do CPF conclua o cadastro."
+      />
 
       {step === 'request' && (
         <div className="space-y-4">
           <form className="space-y-4" onSubmit={confirmCpf}>
-            <label className="form-control">
-              <div className="label"><span className="label-text">CPF</span></div>
-              <input className={`input input-bordered ${cpfErrors.cpf ? 'input-error' : ''}`} placeholder="000.000.000-00" maxLength={14} {...registerCpf('cpf')} />
-              {cpfErrors.cpf && <span className="text-error text-sm">{cpfErrors.cpf.message}</span>}
-            </label>
-            <button className={`btn btn-secondary w-full ${confirmingCpf ? 'loading' : ''}`} disabled={confirmingCpf}>
+            <FormField label="CPF" error={cpfErrors.cpf?.message}>
+              <input
+                className={`input input-bordered ${cpfErrors.cpf ? 'input-error' : ''}`}
+                placeholder="000.000.000-00"
+                maxLength={14}
+                {...registerCpf('cpf')}
+              />
+            </FormField>
+            <Button variant="secondary" type="submit" fullWidth isLoading={confirmingCpf}>
               {confirmingCpf ? 'Buscando contato...' : 'Continuar'}
-            </button>
+            </Button>
           </form>
 
           {cpfConfirmed && contactHint && (
             <form className="space-y-4" onSubmit={requestOtp}>
-              <label className="form-control">
-                <div className="label">
-                  <span className="label-text">
-                    Informe o e-mail cadastrado {contactHint} para enviarmos o código de confirmação:
-                  </span>
-                </div>
+              <FormField
+                label={(
+                  <>
+                    Informe o e-mail cadastrado{' '}
+                    <span className="font-mono">{contactHint}</span>{' '}
+                    para enviarmos o código de confirmação:
+                  </>
+                )}
+                error={emailErrors.email?.message}
+              >
                 <input
                   type="email"
                   className={`input input-bordered ${emailErrors.email ? 'input-error' : ''}`}
                   placeholder="seuemail@exemplo.com"
                   {...registerEmail('email')}
                 />
-                {emailErrors.email && (
-                  <span className="text-error text-sm">{emailErrors.email.message}</span>
-                )}
-              </label>
-              <button
-                className={`btn btn-primary w-full ${requesting ? 'loading' : ''}`}
+              </FormField>
+              <Button
+                variant="primary"
                 type="submit"
-                disabled={requesting || !watchedEmail}
+                fullWidth
+                isLoading={requesting}
+                disabled={!watchedEmail}
               >
                 {requesting ? 'Enviando código...' : 'Receber código por e-mail'}
-              </button>
+              </Button>
             </form>
           )}
 
@@ -158,50 +168,63 @@ export default function CreatePasswordPage() {
 
       {step === 'define' && (
         <form className="space-y-4" onSubmit={definePassword}>
-          <div className="alert">
-            <div>
+          <Alert>
+            <div className="flex-1">
               <h3 className="font-bold">Código enviado</h3>
               <div className="text-sm opacity-70">
                 Enviamos o código {otpPreview} para o contato {contactHint || 'cadastrado'}.
               </div>
             </div>
             <button type="button" className="btn btn-link" onClick={startOver}>Trocar CPF</button>
-          </div>
+          </Alert>
 
           <p className="text-sm text-base-content/70">Informe o código recebido e escolha uma senha segura.</p>
 
-          <label className="form-control">
-            <div className="label"><span className="label-text">Código</span></div>
-            <input className={`input input-bordered ${defineErrors.otp ? 'input-error' : ''}`} placeholder="123456" maxLength={6} {...registerDefine('otp')} />
-            {defineErrors.otp && <span className="text-error text-sm">{defineErrors.otp.message}</span>}
-          </label>
+          <FormField label="Código" error={defineErrors.otp?.message}>
+            <input
+              className={`input input-bordered ${defineErrors.otp ? 'input-error' : ''}`}
+              placeholder="123456"
+              maxLength={6}
+              {...registerDefine('otp')}
+            />
+          </FormField>
 
-          <label className="form-control">
-            <div className="label"><span className="label-text">Nova senha</span></div>
-            <input type="password" className={`input input-bordered ${defineErrors.password ? 'input-error' : ''}`} placeholder="••••••••" {...registerDefine('password')} />
-            {defineErrors.password && <span className="text-error text-sm">{defineErrors.password.message}</span>}
-          </label>
+          <FormField label="Nova senha" error={defineErrors.password?.message}>
+            <input
+              type="password"
+              className={`input input-bordered ${defineErrors.password ? 'input-error' : ''}`}
+              placeholder="••••••••"
+              {...registerDefine('password')}
+            />
+          </FormField>
 
-          <label className="form-control">
-            <div className="label"><span className="label-text">Confirmar senha</span></div>
-            <input type="password" className={`input input-bordered ${defineErrors.confirmPassword ? 'input-error' : ''}`} placeholder="••••••••" {...registerDefine('confirmPassword')} />
-            {defineErrors.confirmPassword && <span className="text-error text-sm">{defineErrors.confirmPassword.message}</span>}
-          </label>
+          <FormField label="Confirmar senha" error={defineErrors.confirmPassword?.message}>
+            <input
+              type="password"
+              className={`input input-bordered ${defineErrors.confirmPassword ? 'input-error' : ''}`}
+              placeholder="••••••••"
+              {...registerDefine('confirmPassword')}
+            />
+          </FormField>
 
-          <button className={`btn btn-primary w-full ${defining ? 'loading' : ''}`} disabled={defining}>
+          <Button variant="primary" type="submit" fullWidth isLoading={defining}>
             {defining ? 'Salvando...' : 'Salvar nova senha'}
-          </button>
+          </Button>
         </form>
       )}
 
       {step === 'success' && (
         <div className="space-y-4 text-center">
-          <div className="alert alert-success justify-center">
+          <Alert variant="success" className="justify-center">
             <span>Senha criada com sucesso! Você já pode acessar com CPF e senha.</span>
-          </div>
-          <button className="btn btn-primary w-full" onClick={() => navigate('/login', { replace: true, state: { cpf: activeCpf } })}>
+          </Alert>
+          <Button
+            variant="primary"
+            fullWidth
+            onClick={() => navigate('/login', { replace: true, state: { cpf: activeCpf } })}
+          >
             Ir para login
-          </button>
+          </Button>
         </div>
       )}
     </div>

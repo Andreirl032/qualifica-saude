@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
 import { fetchCsvHistory } from '../services/secretaryService.js'
+import { PageHeader } from '../components/PageHeader.jsx'
+import { Button } from '../components/Button.jsx'
+import { Alert } from '../components/Alert.jsx'
+import { Badge } from '../components/Badge.jsx'
 
 export default function SecretaryDashboard() {
   const [history, setHistory] = useState([])
@@ -39,9 +43,7 @@ export default function SecretaryDashboard() {
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">Painel do Secretário</h1>
-      </header>
+      <PageHeader title="Painel do Secretário" align="left" />
 
       <div className="card bg-base-100 shadow">
         <div className="card-body flex flex-col gap-4 md:flex-row md:items-end">
@@ -50,18 +52,18 @@ export default function SecretaryDashboard() {
             <p className="text-sm text-base-content/70">
               Clique para simular a leitura de um arquivo CSV contendo os pacientes agendados para procedimentos.
             </p>
-            <button className="btn btn-primary w-fit" onClick={handleImportClick}>
+            <Button variant="primary" onClick={handleImportClick}>
               Importar CSV mockado
-            </button>
+            </Button>
           </div>
           <div className="flex-1 space-y-2">
             <span className="font-semibold">Exportar CSV (mock)</span>
             <p className="text-sm text-base-content/70">
               Clique para simular o download do CSV com os dados atuais dos pacientes.
             </p>
-            <button className="btn btn-outline w-fit" onClick={handleExportClick}>
+            <Button variant="outline" onClick={handleExportClick}>
               Exportar CSV mockado
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -73,9 +75,9 @@ export default function SecretaryDashboard() {
             <p className="text-sm text-base-content/70">Dados mockados servidos pelo MSW.</p>
           </div>
           {historyError && (
-            <div className="alert alert-error">
+            <Alert variant="error">
               <span>{historyError}</span>
-            </div>
+            </Alert>
           )}
           <div className="overflow-x-auto">
             <table className="table">
@@ -100,9 +102,9 @@ export default function SecretaryDashboard() {
                       <td>{entry.filename}</td>
                       <td>{entry.rows}</td>
                       <td>
-                        <span className={`badge ${entry.status === 'Sucesso' ? 'badge-success' : 'badge-error'}`}>
+                        <Badge variant={entry.status === 'Sucesso' ? 'success' : 'error'}>
                           {entry.status}
-                        </span>
+                        </Badge>
                       </td>
                       <td>{entry.timestamp}</td>
                     </tr>

@@ -3,6 +3,9 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useParams } from 'react-router-dom'
 import { qualifyDocument } from '../services/documentService.js'
+import { PageHeader } from '../components/PageHeader.jsx'
+import { FormField } from '../components/FormField.jsx'
+import { Button } from '../components/Button.jsx'
 
 const schema = z.object({
   status: z.enum(['aprovado', 'rejeitado']),
@@ -26,27 +29,34 @@ export default function PatientDocumentQualificationPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-4">Qualificação de Documento {documentoId ? `#${documentoId}` : ''}</h1>
+    <div className="max-w-2xl mx-auto space-y-6">
+      <PageHeader
+        align="left"
+        title={`Qualificação de Documento ${documentoId ? `#${documentoId}` : ''}`}
+        subtitle="Atualize o status do documento e registre observações clínicas."
+      />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <label className="form-control">
-          <div className="label"><span className="label-text">Status</span></div>
+        <FormField label="Status" error={errors.status?.message}>
           <select className="select select-bordered" {...register('status')}>
             <option value="aprovado">Aprovado</option>
             <option value="rejeitado">Rejeitado</option>
           </select>
-          {errors.status && <span className="text-error text-sm">{errors.status.message}</span>}
-        </label>
-        <label className="form-control">
-          <div className="label"><span className="label-text">Observações</span></div>
-          <textarea className="textarea textarea-bordered" rows={5} placeholder="Escreva notas clínicas e justificativas" {...register('observacoes')} />
-          {errors.observacoes && <span className="text-error text-sm">{errors.observacoes.message}</span>}
-        </label>
-        <div className="flex gap-2">
-          <button className={`btn btn-primary ${isSubmitting ? 'loading' : ''}`} disabled={isSubmitting}>
+        </FormField>
+        <FormField label="Observações" error={errors.observacoes?.message}>
+          <textarea
+            className="textarea textarea-bordered"
+            rows={5}
+            placeholder="Escreva notas clínicas e justificativas"
+            {...register('observacoes')}
+          />
+        </FormField>
+        <div className="flex flex-wrap gap-2">
+          <Button type="submit" variant="primary" isLoading={isSubmitting}>
             {isSubmitting ? 'Salvando...' : 'Salvar'}
-          </button>
-          <button type="button" className="btn" onClick={() => navigate(-1)}>Cancelar</button>
+          </Button>
+          <Button type="button" variant="outline" onClick={() => navigate(-1)}>
+            Cancelar
+          </Button>
         </div>
       </form>
     </div>

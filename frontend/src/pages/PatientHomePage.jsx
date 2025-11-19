@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { getPatientProcedures, uploadPatientDocument } from '../services/documentService.js'
+import { PageHeader } from '../components/PageHeader.jsx'
+import { Alert } from '../components/Alert.jsx'
+import { Badge } from '../components/Badge.jsx'
 
 const statusLabels = {
   'pendente-documentos': 'Documentos pendentes',
@@ -15,21 +18,21 @@ const docStatusLabels = {
   rejeitado: 'Rejeitado',
 }
 
-function statusBadgeClass(status) {
+function statusBadgeVariant(status) {
   switch (status) {
     case 'pendente-documentos':
     case 'pendente':
-      return 'badge-warning'
+      return 'warning'
     case 'aguardando-analise':
     case 'enviado':
-      return 'badge-info'
+      return 'info'
     case 'aprovado':
     case 'completo':
-      return 'badge-success'
+      return 'success'
     case 'rejeitado':
-      return 'badge-error'
+      return 'error'
     default:
-      return ''
+      return 'default'
   }
 }
 
@@ -90,17 +93,16 @@ export default function PatientHomePage() {
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">Área do Paciente</h1>
-        <p className="text-base-content/70 text-sm">
-          Veja abaixo seus procedimentos e quais documentos ainda precisam ser enviados para a equipe de saúde.
-        </p>
-      </header>
+      <PageHeader
+        title="Área do Paciente"
+        subtitle="Veja abaixo seus procedimentos e quais documentos ainda precisam ser enviados para a equipe de saúde."
+        align="left"
+      />
 
       {error && (
-        <div className="alert alert-error">
+        <Alert variant="error">
           <span>{error}</span>
-        </div>
+        </Alert>
       )}
 
       <section className="card bg-base-100 shadow">
@@ -115,9 +117,9 @@ export default function PatientHomePage() {
           {isLoading ? (
             <div className="text-center opacity-70">Carregando seus documentos...</div>
           ) : pendingDocuments.length === 0 ? (
-            <div className="alert alert-success">
+            <Alert variant="success">
               <span>Você não tem documentos pendentes no momento.</span>
-            </div>
+            </Alert>
           ) : (
             <div className="overflow-x-auto">
               <table className="table">
@@ -140,9 +142,9 @@ export default function PatientHomePage() {
                         </td>
                         <td>{document.name}</td>
                         <td>
-                          <span className={`badge ${statusBadgeClass(document.status)}`}>
+                          <Badge variant={statusBadgeVariant(document.status)}>
                             {docStatusLabels[document.status] || document.status}
-                          </span>
+                          </Badge>
                         </td>
                         <td>
                           <button
@@ -176,9 +178,9 @@ export default function PatientHomePage() {
           {isLoading ? (
             <div className="text-center opacity-70">Carregando seus procedimentos...</div>
           ) : procedures.length === 0 ? (
-            <div className="alert">
+            <Alert>
               <span>Você ainda não possui procedimentos cadastrados.</span>
-            </div>
+            </Alert>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
               {procedures.map((proc) => (
@@ -189,9 +191,9 @@ export default function PatientHomePage() {
                         <h3 className="font-semibold">{proc.name}</h3>
                         <p className="text-xs text-base-content/70">{proc.facility}</p>
                       </div>
-                      <span className={`badge ${statusBadgeClass(proc.status)}`}>
+                      <Badge variant={statusBadgeVariant(proc.status)}>
                         {statusLabels[proc.status] || proc.status}
-                      </span>
+                      </Badge>
                     </div>
                     <p className="text-sm">{proc.date}</p>
                     <div className="divider my-2" />
@@ -208,9 +210,9 @@ export default function PatientHomePage() {
                             )}
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className={`badge badge-sm ${statusBadgeClass(doc.status)}`}>
+                            <Badge variant={statusBadgeVariant(doc.status)} size="sm">
                               {docStatusLabels[doc.status] || doc.status}
-                            </span>
+                            </Badge>
                             {(doc.status === 'pendente' || doc.status === 'rejeitado') && (
                               <button
                                 type="button"
