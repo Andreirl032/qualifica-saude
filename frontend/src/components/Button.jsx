@@ -1,12 +1,4 @@
-export const buttonVariantClasses = {
-  primary: 'btn-primary',
-  secondary: 'btn-secondary',
-  outline: 'btn-outline',
-  link: 'btn-link',
-  ghost: 'btn-ghost',
-  success: 'btn-success',
-  error: 'btn-error',
-}
+import { buttonVariantClasses } from './button.constants.js'
 
 export function Button({
   variant = 'primary',

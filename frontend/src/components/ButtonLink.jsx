@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { buttonVariantClasses } from './Button.jsx'
+import { buttonVariantClasses } from './button.constants.js'
 
 export function ButtonLink({
   to,
