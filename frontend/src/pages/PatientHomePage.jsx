@@ -105,7 +105,7 @@ export default function PatientHomePage() {
         </Alert>
       )}
 
-      <section className="card bg-base-100 shadow">
+      <section className="card bg-base-100 shadow-md">
         <div className="card-body space-y-4">
           <div className="flex items-center justify-between gap-2">
             <div>
@@ -166,7 +166,7 @@ export default function PatientHomePage() {
         </div>
       </section>
 
-      <section className="card bg-base-100 shadow">
+      <section className="card bg-base-100 shadow-md">
         <div className="card-body space-y-4">
           <div className="flex items-center justify-between gap-2">
             <div>

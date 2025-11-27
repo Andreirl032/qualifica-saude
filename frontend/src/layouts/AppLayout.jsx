@@ -6,7 +6,7 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="navbar bg-base-700 shadow flex relative">
+      <div className="navbar bg-base-700 shadow-md flex relative">
         <Link
           to="/"
           className="btn btn-ghost text-xl absolute left-1/2 transform -translate-x-1/2"

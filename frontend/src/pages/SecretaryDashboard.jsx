@@ -45,7 +45,7 @@ export default function SecretaryDashboard() {
     <div className="space-y-6">
       <PageHeader title="Painel do Secretário" align="left" />
 
-      <div className="card bg-base-100 shadow">
+      <div className="card bg-base-100 shadow-md">
         <div className="card-body flex flex-col gap-4 md:flex-row md:items-end">
           <div className="flex-1 space-y-2">
             <span className="font-semibold">Importar CSV (mock)</span>
@@ -68,7 +68,7 @@ export default function SecretaryDashboard() {
         </div>
       </div>
 
-      <section className="card bg-base-100 shadow">
+      <section className="card bg-base-100 shadow-md">
         <div className="card-body space-y-4">
           <div>
             <h2 className="card-title">Histórico de envios CSV</h2>

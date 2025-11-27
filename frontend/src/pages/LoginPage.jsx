@@ -188,7 +188,7 @@ export default function LoginPage() {
               isLoading={isSubmittingCpf}
               className="rounded-xl bg-blue-950 text-white"
             >
-              {isSubmittingCpf ? "Validando..." : "Entrar com CPF"}
+              {isSubmittingCpf ? "Validando..." : "Entrar"}
             </Button>
             <Button
               type="button"
