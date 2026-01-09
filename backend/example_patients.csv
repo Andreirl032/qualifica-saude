@@ -1,0 +1,5 @@
+nome,cpf,email,procedimento,data,unidade
+João Silva,123.456.789-00,joao@email.com,Consulta cardiológica,20/01/2026 09:00,Hospital Central
+Maria Santos,987.654.321-00,maria@email.com,Exame de sangue,22/01/2026 14:30,Clínica Laboratório
+Pedro Oliveira,111.222.333-44,pedro@email.com,Ultrassom abdominal,25/01/2026 10:00,Centro Diagnóstico
+Ana Costa,555.666.777-88,ana@email.com,Raio-X tórax,28/01/2026 15:00,Hospital Municipal
