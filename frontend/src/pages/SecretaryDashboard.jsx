@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { fetchCsvHistory } from '../services/secretaryService.js'
+import { useEffect, useState, useRef } from 'react'
+import { fetchCsvHistory, uploadCsv } from '../services/secretaryService.js'
 import { PageHeader } from '../components/PageHeader.jsx'
 import { Button } from '../components/Button.jsx'
 import { Alert } from '../components/Alert.jsx'
@@ -9,60 +9,133 @@ export default function SecretaryDashboard() {
   const [history, setHistory] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [historyError, setHistoryError] = useState(null)
+  const [uploadSuccess, setUploadSuccess] = useState(null)
+  const [uploadError, setUploadError] = useState(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
-    let active = true
-    async function loadHistory() {
-      try {
-        setIsLoading(true)
-        const data = await fetchCsvHistory()
-        if (!active) return
-        setHistory(Array.isArray(data) ? data : [])
-        setHistoryError(null)
-      } catch (error) {
-        if (!active) return
-        setHistory([])
-        setHistoryError(error.message || 'Não foi possível carregar o histórico.')
-      } finally {
-        if (active) setIsLoading(false)
-      }
-    }
     loadHistory()
-    return () => {
-      active = false
-    }
   }, [])
 
+  async function loadHistory() {
+    try {
+      setIsLoading(true)
+      const data = await fetchCsvHistory()
+      setHistory(Array.isArray(data) ? data : [])
+      setHistoryError(null)
+    } catch (error) {
+      setHistory([])
+      setHistoryError(error.message || 'Não foi possível carregar o histórico.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleImportClick = () => {
-    alert('Importação mockada: simulando leitura de CSV dos pacientes.')
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!file.name.endsWith('.csv')) {
+      setUploadError('Apenas arquivos CSV são aceitos.')
+      setUploadSuccess(null)
+      return
+    }
+
+    try {
+      setIsUploading(true)
+      setUploadError(null)
+      setUploadSuccess(null)
+
+      const result = await uploadCsv(file)
+      
+      setUploadSuccess(result.message || 'CSV processado com sucesso!')
+      if (result.errors && result.errors.length > 0) {
+        setUploadError(`Avisos: ${result.errors.join(', ')}`)
+      }
+      
+      await loadHistory()
+    } catch (error) {
+      setUploadError(error.message || 'Erro ao enviar arquivo CSV.')
+      setUploadSuccess(null)
+    } finally {
+      setIsUploading(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
   }
 
   const handleExportClick = () => {
-    alert('Exportação mockada: simulando download do CSV com os pacientes.')
+    const csvContent = [
+      'Arquivo,Linhas,Resultado,Data/Hora',
+      ...history.map(entry => 
+        `"${entry.filename}",${entry.rows},"${entry.status}","${entry.timestamp}"`
+      )
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `historico-csv-${new Date().toISOString().split('T')[0]}.csv`
+    link.click()
   }
 
   return (
     <div className="space-y-6">
       <PageHeader title="Painel do Secretário" align="left" />
 
+      {uploadSuccess && (
+        <Alert variant="success">
+          <span>{uploadSuccess}</span>
+        </Alert>
+      )}
+
+      {uploadError && (
+        <Alert variant="error">
+          <span>{uploadError}</span>
+        </Alert>
+      )}
+
       <div className="card bg-base-100 shadow-md">
         <div className="card-body flex flex-col gap-4 md:flex-row md:items-end">
           <div className="flex-1 space-y-2">
-            <span className="font-semibold">Importar CSV (mock)</span>
+            <span className="font-semibold">Importar CSV</span>
             <p className="text-sm text-base-content/70">
-              Clique para simular a leitura de um arquivo CSV contendo os pacientes agendados para procedimentos.
+              Faça upload de um arquivo CSV contendo os pacientes e procedimentos.
+              <br />
+              <span className="text-xs">Formato: nome,cpf,email,procedimento,data,unidade</span>
             </p>
-            <Button variant="primary" onClick={handleImportClick}>
-              Importar CSV mockado
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <Button 
+              variant="primary" 
+              onClick={handleImportClick}
+              disabled={isUploading}
+            >
+              {isUploading ? 'Enviando...' : 'Importar CSV'}
             </Button>
           </div>
           <div className="flex-1 space-y-2">
-            <span className="font-semibold">Exportar CSV (mock)</span>
+            <span className="font-semibold">Exportar histórico</span>
             <p className="text-sm text-base-content/70">
-              Clique para simular o download do CSV com os dados atuais dos pacientes.
+              Faça download do histórico de uploads em formato CSV.
             </p>
-            <Button variant="outline" onClick={handleExportClick}>
-              Exportar CSV mockado
+            <Button 
+              variant="outline" 
+              onClick={handleExportClick}
+              disabled={history.length === 0}
+            >
+              Exportar CSV
             </Button>
           </div>
         </div>
@@ -72,7 +145,7 @@ export default function SecretaryDashboard() {
         <div className="card-body space-y-4">
           <div>
             <h2 className="card-title">Histórico de envios CSV</h2>
-            <p className="text-sm text-base-content/70">Dados mockados servidos pelo MSW.</p>
+            <p className="text-sm text-base-content/70">Registros de processamento de arquivos CSV.</p>
           </div>
           {historyError && (
             <Alert variant="error">

@@ -151,7 +151,7 @@ export default function LoginPage() {
               type="submit"
               variant=""
               fullWidth
-              isLoading={isSubmitting}
+              disabled={isSubmitting}
               className="rounded-xl bg-blue-950 text-white"
             >
               {isSubmitting ? "Entrando..." : "Entrar"}
@@ -185,10 +185,10 @@ export default function LoginPage() {
               type="submit"
               variant=""
               fullWidth
-              isLoading={isSubmittingCpf}
+              disabled={isSubmittingCpf}
               className="rounded-xl bg-blue-950 text-white"
             >
-              {isSubmittingCpf ? "Validando..." : "Entrar"}
+              {isSubmittingCpf ? "Entrando..." : "Entrar"}
             </Button>
             <Button
               type="button"
