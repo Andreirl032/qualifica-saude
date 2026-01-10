@@ -78,7 +78,6 @@ export default function CreatePasswordPage() {
       setContactHint(response.contactHint)
       setStep('define')
       resetDefine()
-      window.alert(`Código enviado: ${response.otpPreview}`)
     } catch (error) {
       const message = error?.response?.data?.message || error.message || 'Falha ao solicitar código.'
       window.alert(message)
@@ -172,7 +171,7 @@ export default function CreatePasswordPage() {
             <div className="flex-1">
               <h3 className="font-bold">Código enviado</h3>
               <div className="text-sm opacity-70">
-                Enviamos o código {otpPreview} para o contato {contactHint || 'cadastrado'}.
+                Enviamos o código para o contato {contactHint || 'cadastrado'}. Verifique sua caixa de entrada.
               </div>
             </div>
             <button type="button" className="btn btn-link" onClick={startOver}>Trocar CPF</button>
