@@ -1,89 +1,96 @@
-import { useEffect, useState, useRef } from 'react'
-import { fetchCsvHistory, uploadCsv } from '../services/secretaryService.js'
-import { PageHeader } from '../components/PageHeader.jsx'
-import { Button } from '../components/Button.jsx'
-import { Alert } from '../components/Alert.jsx'
-import { Badge } from '../components/Badge.jsx'
+import { useEffect, useState, useRef } from "react";
+import { fetchCsvHistory, uploadCsv } from "../services/secretaryService.js";
+import { PageHeader } from "../components/PageHeader.jsx";
+import { Button } from "../components/Button.jsx";
+import { Alert } from "../components/Alert.jsx";
+import { Badge } from "../components/Badge.jsx";
+
+import { faFileImport, faFileExport } from "@fortawesome/free-solid-svg-icons";
 
 export default function SecretaryDashboard() {
-  const [history, setHistory] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [historyError, setHistoryError] = useState(null)
-  const [uploadSuccess, setUploadSuccess] = useState(null)
-  const [uploadError, setUploadError] = useState(null)
-  const [isUploading, setIsUploading] = useState(false)
-  const fileInputRef = useRef(null)
+  const [history, setHistory] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [historyError, setHistoryError] = useState(null);
+  const [uploadSuccess, setUploadSuccess] = useState(null);
+  const [uploadError, setUploadError] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
-    loadHistory()
-  }, [])
+    loadHistory();
+  }, []);
 
   async function loadHistory() {
     try {
-      setIsLoading(true)
-      const data = await fetchCsvHistory()
-      setHistory(Array.isArray(data) ? data : [])
-      setHistoryError(null)
+      setIsLoading(true);
+      const data = await fetchCsvHistory();
+      setHistory(Array.isArray(data) ? data : []);
+      setHistoryError(null);
     } catch (error) {
-      setHistory([])
-      setHistoryError(error.message || 'Não foi possível carregar o histórico.')
+      setHistory([]);
+      setHistoryError(
+        error.message || "Não foi possível carregar o histórico."
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   const handleImportClick = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   const handleFileChange = async (event) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-    if (!file.name.endsWith('.csv')) {
-      setUploadError('Apenas arquivos CSV são aceitos.')
-      setUploadSuccess(null)
-      return
+    if (!file.name.endsWith(".csv")) {
+      setUploadError("Apenas arquivos CSV são aceitos.");
+      setUploadSuccess(null);
+      return;
     }
 
     try {
-      setIsUploading(true)
-      setUploadError(null)
-      setUploadSuccess(null)
+      setIsUploading(true);
+      setUploadError(null);
+      setUploadSuccess(null);
 
-      const result = await uploadCsv(file)
-      
-      setUploadSuccess(result.message || 'CSV processado com sucesso!')
+      const result = await uploadCsv(file);
+
+      setUploadSuccess(result.message || "CSV processado com sucesso!");
       if (result.errors && result.errors.length > 0) {
-        setUploadError(`Avisos: ${result.errors.join(', ')}`)
+        setUploadError(`Avisos: ${result.errors.join(", ")}`);
       }
-      
-      await loadHistory()
+
+      await loadHistory();
     } catch (error) {
-      setUploadError(error.message || 'Erro ao enviar arquivo CSV.')
-      setUploadSuccess(null)
+      setUploadError(error.message || "Erro ao enviar arquivo CSV.");
+      setUploadSuccess(null);
     } finally {
-      setIsUploading(false)
+      setIsUploading(false);
       if (fileInputRef.current) {
-        fileInputRef.current.value = ''
+        fileInputRef.current.value = "";
       }
     }
-  }
+  };
 
   const handleExportClick = () => {
     const csvContent = [
-      'Arquivo,Linhas,Resultado,Data/Hora',
-      ...history.map(entry => 
-        `"${entry.filename}",${entry.rows},"${entry.status}","${entry.timestamp}"`
-      )
-    ].join('\n')
+      "Arquivo,Linhas,Resultado,Data/Hora",
+      ...history.map(
+        (entry) =>
+          `"${entry.filename}",${entry.rows},"${entry.status}","${entry.timestamp}"`
+      ),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = `historico-csv-${new Date().toISOString().split('T')[0]}.csv`
-    link.click()
-  }
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `historico-csv-${
+      new Date().toISOString().split("T")[0]
+    }.csv`;
+    link.click();
+  };
 
   return (
     <div className="space-y-6">
@@ -106,9 +113,12 @@ export default function SecretaryDashboard() {
           <div className="flex-1 space-y-2">
             <span className="font-semibold">Importar CSV</span>
             <p className="text-sm text-base-content/70">
-              Faça upload de um arquivo CSV contendo os pacientes e procedimentos.
+              Faça upload de um arquivo CSV contendo os pacientes e
+              procedimentos.
               <br />
-              <span className="text-xs">Formato: nome,cpf,email,procedimento,data,unidade</span>
+              <span className="text-xs">
+                Formato: nome,cpf,email,procedimento,data,unidade
+              </span>
             </p>
             <input
               ref={fileInputRef}
@@ -117,12 +127,13 @@ export default function SecretaryDashboard() {
               onChange={handleFileChange}
               className="hidden"
             />
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               onClick={handleImportClick}
               disabled={isUploading}
+              icon={faFileImport}
             >
-              {isUploading ? 'Enviando...' : 'Importar CSV'}
+              {isUploading ? "Enviando..." : "Importar CSV"}
             </Button>
           </div>
           <div className="flex-1 space-y-2">
@@ -130,10 +141,11 @@ export default function SecretaryDashboard() {
             <p className="text-sm text-base-content/70">
               Faça download do histórico de uploads em formato CSV.
             </p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={handleExportClick}
               disabled={history.length === 0}
+              icon={faFileExport}
             >
               Exportar CSV
             </Button>
@@ -145,7 +157,9 @@ export default function SecretaryDashboard() {
         <div className="card-body space-y-4">
           <div>
             <h2 className="card-title">Histórico de envios CSV</h2>
-            <p className="text-sm text-base-content/70">Registros de processamento de arquivos CSV.</p>
+            <p className="text-sm text-base-content/70">
+              Registros de processamento de arquivos CSV.
+            </p>
           </div>
           {historyError && (
             <Alert variant="error">
@@ -175,7 +189,11 @@ export default function SecretaryDashboard() {
                       <td>{entry.filename}</td>
                       <td>{entry.rows}</td>
                       <td>
-                        <Badge variant={entry.status === 'Sucesso' ? 'success' : 'error'}>
+                        <Badge
+                          variant={
+                            entry.status === "Sucesso" ? "success" : "error"
+                          }
+                        >
                           {entry.status}
                         </Badge>
                       </td>
@@ -195,5 +213,5 @@ export default function SecretaryDashboard() {
         </div>
       </section>
     </div>
-  )
+  );
 }
