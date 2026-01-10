@@ -1,0 +1,2 @@
+# Diretório para armazenar documentos enviados pelos pacientes
+# Estrutura: uploads/{patient_id}/{timestamp}_{filename}

@@ -43,16 +43,29 @@ def seed_procedures():
 
 
 def seed_documents():
+    now = datetime.now()
+    
     docs = [
-        {'id': 'doc1', 'procedure_id': 'proc1', 'name': 'Risco cirúrgico', 'status': 'pendente', 'type': 'pdf'},
-        {'id': 'doc2', 'procedure_id': 'proc1', 'name': 'Exame de sangue recente', 'status': 'aprovado', 'type': 'pdf'},
+        {'id': 'doc1', 'procedure_id': 'proc1', 'name': 'Risco cirúrgico', 'status': 'enviado', 'type': 'pdf',
+         'last_upload_filename': 'exemplo-risco.pdf', 'last_upload_at': now - timedelta(hours=2)},
+        {'id': 'doc2', 'procedure_id': 'proc1', 'name': 'Exame de sangue recente', 'status': 'aprovado', 'type': 'pdf',
+         'last_upload_filename': 'exame-sangue.pdf', 'last_upload_at': now - timedelta(days=1),
+         'observacoes': 'Exame dentro dos padrões normais', 'qualified_at': now - timedelta(hours=12)},
         {'id': 'doc3', 'procedure_id': 'proc2', 'name': 'Consentimento informado assinado', 'status': 'pendente', 'type': 'pdf'},
-        {'id': 'doc4', 'procedure_id': 'proc3', 'name': 'Relatório de alta', 'status': 'aprovado', 'type': 'pdf'}
+        {'id': 'doc4', 'procedure_id': 'proc3', 'name': 'Relatório de alta', 'status': 'aprovado', 'type': 'pdf',
+         'last_upload_filename': 'alta.pdf', 'last_upload_at': now - timedelta(days=2),
+         'observacoes': 'Alta médica autorizada', 'qualified_at': now - timedelta(days=1)}
     ]
     
     for d in docs:
-        if not Document.query.filter_by(id=d['id']).first():
+        existing = Document.query.filter_by(id=d['id']).first()
+        if not existing:
             db.session.add(Document(**d))
+        else:
+            # Atualizar documento existente
+            for key, value in d.items():
+                if key != 'id':
+                    setattr(existing, key, value)
     
     db.session.commit()
     print("✓ Documentos")
@@ -133,7 +146,6 @@ def seed_professional_documents():
 
 
 def seed_csv_history():
-    # Remove IDs existentes para evitar conflitos
     CSVHistory.query.delete()
     
     history = [
