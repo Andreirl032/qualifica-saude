@@ -46,17 +46,16 @@ SQLALCHEMY_ECHO=False
 pip install -r requirements.txt
 ```
 
-### 4. Popular banco de dados
+### 4. Inicializar banco de dados
 
 ```bash
 python seeds.py
 ```
-
-Isso criará:
+Cria as tabelas automaticamente e populará com dados de demonstração:
 - 4 usuários (paciente, profissional, secretário, paciente sem senha)
 - 3 procedimentos para o paciente
 - 4 documentos requeridos
-- 4 documentos profissionais
+- Documentos de exemplo para qualificação
 - 3 registros de histórico CSV
 
 ### 5. Executar servidor
