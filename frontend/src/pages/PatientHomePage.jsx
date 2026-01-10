@@ -41,6 +41,7 @@ export default function PatientHomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [uploadingId, setUploadingId] = useState(null)
+  const fileInputRef = useState({})[0]
 
   useEffect(() => {
     let active = true
@@ -76,12 +77,29 @@ export default function PatientHomePage() {
     return items
   }, [procedures])
 
-  async function handleUploadClick(procedureId, documentId) {
-    const mockFileName = window.prompt('Nome do arquivo para enviar (mock)?', 'risco-cirurgico.pdf')
-    if (!mockFileName) return
+  function handleUploadClick(procedureId, documentId) {
+    const key = `${procedureId}:${documentId}`
+    if (!fileInputRef[key]) {
+      fileInputRef[key] = document.createElement('input')
+      fileInputRef[key].type = 'file'
+      fileInputRef[key].accept = '.pdf,.jpg,.jpeg,.png'
+      fileInputRef[key].onchange = (e) => handleFileSelected(procedureId, documentId, e.target.files[0])
+    }
+    fileInputRef[key].click()
+  }
+
+  async function handleFileSelected(procedureId, documentId, file) {
+    if (!file) return
+    
+    const maxSize = 10 * 1024 * 1024 // 10MB
+    if (file.size > maxSize) {
+      window.alert('Arquivo muito grande. Tamanho máximo: 10MB')
+      return
+    }
+    
     try {
       setUploadingId(`${procedureId}:${documentId}`)
-      const updated = await uploadPatientDocument(procedureId, documentId, mockFileName)
+      const updated = await uploadPatientDocument(procedureId, documentId, file)
       setProcedures((prev) => prev.map((p) => (p.id === updated.id ? updated : p)))
       window.alert('Documento enviado com sucesso! Será analisado pela equipe em breve.')
     } catch (e) {
@@ -153,7 +171,7 @@ export default function PatientHomePage() {
                             disabled={uploadingId === key}
                             onClick={() => handleUploadClick(procedure.id, document.id)}
                           >
-                            {uploadingId === key ? 'Enviando...' : 'Enviar documento mockado'}
+                            {uploadingId === key ? 'Enviando...' : 'Enviar documento'}
                           </button>
                         </td>
                       </tr>

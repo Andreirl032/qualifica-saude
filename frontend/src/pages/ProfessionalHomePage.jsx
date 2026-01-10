@@ -55,7 +55,7 @@ export default function ProfessionalHomePage() {
     const pendingDocs = []
     const completedDocs = []
     documents.forEach((doc) => {
-      if (doc.status === 'pendente') {
+      if (doc.status === 'enviado') {
         pendingDocs.push(doc)
       } else {
         completedDocs.push(doc)
