@@ -106,7 +106,7 @@ export default function CreatePasswordPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-[20%] py-[25%] flex flex-col justify-center">
       <PageHeader
         title="Definir primeira senha"
         subtitle="Usamos um código de uso único para garantir que apenas o titular do CPF conclua o cadastro."
