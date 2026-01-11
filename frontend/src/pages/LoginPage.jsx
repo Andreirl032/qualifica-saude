@@ -7,6 +7,7 @@ import { useAuth } from '../hooks/useAuth.js'
 import { PageHeader } from '../components/PageHeader.jsx'
 import { FormField } from '../components/FormField.jsx'
 import { Button } from '../components/Button.jsx'
+// import { BrButton } from "@govbr-ds/webcomponents-react";
 
 // Schemas de validação para login
 const secretarySchema = z.object({
@@ -100,7 +101,6 @@ export default function LoginPage() {
   return (
       <div className="space-y-6">
         <PageHeader title="Entrar" />
-
         <div
           role="tablist"
           className="tabs tabs-boxed flex justify-around gap-4"
