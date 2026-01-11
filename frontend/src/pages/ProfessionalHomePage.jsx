@@ -7,6 +7,8 @@ import { Button } from "../components/Button.jsx";
 import { getProfessionalDocuments } from "../services/documentService.js";
 
 import { faArrowsSpin } from "@fortawesome/free-solid-svg-icons";
+import { BrButton } from "@govbr-ds/webcomponents-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function formatDateTime(value) {
   if (!value) return "-";
@@ -70,18 +72,22 @@ export default function ProfessionalHomePage() {
   }, [documents]);
 
   return (
-    <div className="space-y-6 p-10">
+    <div className="space-y-6 p-10 gap-15 flex-col flex">
       {/* <PageHeader
         align="left"
         title="Documentos para qualificação"
         subtitle="Acompanhe os envios mais recentes e finalize as pendências dos pacientes."
       /> */}
-      <h1 class="text-3xl leading-16 font-semibold text-[#0c326f] pb-2.5 m-0 text-left">
+      <div>
+      <div className="mb-5">
+      <h1 class="text-3xl leading-16 font-semibold text-[#0c326f] pb-0 m-0 text-left">
           Documentos para qualificação
       </h1>
       <h2 className="align-left">Acompanhe os envios mais recentes e finalize as pendências dos pacientes.</h2>
+      </div>
+      
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-6">
         <div>
           <p className="text-sm text-base-content/70">
             Total de documentos: {documents.length}
@@ -90,14 +96,23 @@ export default function ProfessionalHomePage() {
             Pendentes: {pending.length}
           </p>
         </div>
-        <Button
+        {/* <Button
           type="button"
           variant="outline"
           onClick={loadDocuments}
           icon={faArrowsSpin}
         >
           Atualizar lista
-        </Button>
+        </Button> */}
+        <BrButton
+          emphasis="primary"  // "primary" para azul, "secondary" para contorno
+          onClick={loadDocuments}
+        >
+          <FontAwesomeIcon icon={faArrowsSpin} className="mr-2" />
+          Atualizar lista
+        </BrButton>
+
+      </div>
       </div>
 
       {error && <Alert variant="error">{error}</Alert>}
@@ -107,9 +122,9 @@ export default function ProfessionalHomePage() {
           Carregando documentos...
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-8 gap-15 flex-col flex">
           <section className="space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between border-b border-gray-300 mb-6 pb-2">
               <h2 className="text-lg font-semibold">Pendentes para análise</h2>
               <Badge variant="warning">{pending.length} pendentes</Badge>
             </div>
@@ -177,7 +192,7 @@ export default function ProfessionalHomePage() {
           </section>
 
           <section className="space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between border-b border-gray-300 mb-6 pb-2">
               <h2 className="text-lg font-semibold">Histórico recente</h2>
               <Badge variant="info">{completed.length} concluídos</Badge>
             </div>
