@@ -7,7 +7,6 @@ import { useAuth } from '../hooks/useAuth.js'
 import { PageHeader } from '../components/PageHeader.jsx'
 import { FormField } from '../components/FormField.jsx'
 import { Button } from '../components/Button.jsx'
-// import { BrButton } from "@govbr-ds/webcomponents-react";
 
 // Schemas de validação para login
 const secretarySchema = z.object({

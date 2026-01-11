@@ -70,12 +70,16 @@ export default function ProfessionalHomePage() {
   }, [documents]);
 
   return (
-    <div className="space-y-6">
-      <PageHeader
+    <div className="space-y-6 p-10">
+      {/* <PageHeader
         align="left"
         title="Documentos para qualificação"
         subtitle="Acompanhe os envios mais recentes e finalize as pendências dos pacientes."
-      />
+      /> */}
+      <h1 class="text-3xl leading-16 font-semibold text-[#0c326f] pb-2.5 m-0 text-left">
+          Documentos para qualificação
+      </h1>
+      <h2 className="align-left">Acompanhe os envios mais recentes e finalize as pendências dos pacientes.</h2>
 
       <div className="flex flex-wrap items-center gap-3">
         <div>

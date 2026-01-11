@@ -82,12 +82,17 @@ export default function PatientDocumentQualificationPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <PageHeader
+    <div className="space-y-6 p-10">
+      {/* <PageHeader
         align="left"
         title={`Qualificação: ${document?.name || 'Documento'}`}
         subtitle={`Paciente: ${document?.patient?.name || 'Desconhecido'} | CPF: ${document?.patient?.cpf || '-'}`}
-      />
+      /> */}
+      <h1 class="text-3xl leading-16 font-semibold text-[#0c326f] pb-2.5 m-0 text-left">
+          {`Qualificação: ${document?.name || 'Documento'}`}
+      </h1>
+      <h2 className="align-left">{`Paciente: ${document?.patient?.name || 'Desconhecido'} | CPF: ${document?.patient?.cpf || '-'}`}</h2>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Visualizador de PDF */}

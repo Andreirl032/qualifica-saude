@@ -130,12 +130,16 @@ export default function PatientHomePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <PageHeader
+    <div className="space-y-6 p-10">
+      {/* <PageHeader
         title="Área do Paciente"
         subtitle="Veja abaixo seus procedimentos e quais documentos ainda precisam ser enviados para a equipe de saúde."
         align="left"
-      />
+      /> */}
+      <h1 class="text-3xl leading-16 font-semibold text-[#0c326f] pb-2.5 m-0 text-left">
+          Área do Paciente
+      </h1>
+      <h2 className="align-left">Veja abaixo seus procedimentos e quais documentos ainda precisam ser enviados para a equipe de saúde.</h2>
 
       {error && (
         <Alert variant="error">

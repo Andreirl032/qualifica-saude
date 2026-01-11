@@ -93,8 +93,11 @@ export default function SecretaryDashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      <PageHeader title="Painel do Secretário" align="left" />
+    <div className="space-y-6 p-10">
+      {/* <PageHeader title="Painel do Secretário" align="left" /> */}
+      <h1 class="text-3xl leading-16 font-semibold text-[#0c326f] pb-2.5 m-0 text-left">
+          Painel do secretário
+      </h1>
 
       {uploadSuccess && (
         <Alert variant="success">
