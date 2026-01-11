@@ -8,6 +8,8 @@ import { Alert } from "../components/Alert.jsx";
 import { Badge } from "../components/Badge.jsx";
 import { Button } from "../components/Button.jsx";
 import { faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { BrButton } from "@govbr-ds/webcomponents-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const statusLabels = {
   "pendente-documentos": "Documentos pendentes",
@@ -148,10 +150,12 @@ export default function PatientHomePage() {
       )}
 
       <section className="card bg-base-100 shadow-md">
-        <div className="card-body space-y-4">
-          <div className="flex items-center justify-between gap-2">
+        <div className="card-body space-y-4 p-0">
+          <div className="collapse collapse-arrow w-full">
+          <input type="checkbox" />
+          <div className="flex items-center justify-between gap-2 collapse-title">
             <div>
-              <h2 className="card-title">Documentos pendentes</h2>
+              <h2 className="card-title">Documentos pendentes ({pendingDocuments.length})</h2>
               <p className="text-sm text-base-content/70">
                 Envie o que estiver faltando para não atrasar seu procedimento.
               </p>
@@ -168,7 +172,7 @@ export default function PatientHomePage() {
               <span>Você não tem documentos pendentes no momento.</span>
             </Alert>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto collapse-content">
               <table className="table">
                 <thead>
                   <tr>
@@ -182,7 +186,7 @@ export default function PatientHomePage() {
                   {pendingDocuments.map(({ procedure, document }) => {
                     const key = `${procedure.id}:${document.id}`;
                     return (
-                      <tr key={key}>
+                      <tr key={key} className="hover:bg-gray-100 transition-all">
                         <td>
                           <div className="font-medium">{procedure.name}</div>
                           <div className="text-xs text-base-content/70">
@@ -197,7 +201,7 @@ export default function PatientHomePage() {
                           </Badge>
                         </td>
                         <td>
-                          <Button
+                          {/* <Button
                             variant="primary"
                             className="btn-sm"
                             isLoading={uploadingId === key}
@@ -206,7 +210,12 @@ export default function PatientHomePage() {
                             icon={faFileArrowUp}
                           >
                             {uploadingId === key ? "Enviando..." : "Enviar documento"}
-                          </Button>
+                          </Button> */}
+                          <BrButton emphasis="primary" className={`btn-sm ${uploadingId === key ? "loading" : ""}`} disabled={uploadingId === key} onClick={()=>handleUploadClick(procedure.id, document.id)}>
+                          <FontAwesomeIcon icon={faFileArrowUp} className="mr-2" />
+                          {uploadingId === key ? "Enviando..." : "Enviar documento"}
+                          </BrButton>
+
                         </td>
                       </tr>
                     );
@@ -215,14 +224,17 @@ export default function PatientHomePage() {
               </table>
             </div>
           )}
+          </div>
         </div>
       </section>
 
       <section className="card bg-base-100 shadow-md">
-        <div className="card-body space-y-4">
-          <div className="flex items-center justify-between gap-2">
+        <div className="card-body space-y-4 p-0">
+          <div className="collapse collapse-arrow w-full">
+            <input type="checkbox" />
+          <div className="flex items-center justify-between gap-2 collapse-title">
             <div>
-              <h2 className="card-title">Meus procedimentos</h2>
+              <h2 className="card-title">Meus procedimentos ({procedures.length})</h2>
               <p className="text-sm text-base-content/70">
                 Resumo dos procedimentos agendados e já concluídos.
               </p>
@@ -239,11 +251,11 @@ export default function PatientHomePage() {
               <span>Você ainda não possui procedimentos cadastrados.</span>
             </Alert>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2 collapse-content">
               {procedures.map((proc) => (
                 <article
                   key={proc.id}
-                  className="card bg-base-100 border border-base-200"
+                  className="card bg-base-100 border border-base-200 hover:bg-gray-100 transition-all"
                 >
                   <div className="card-body space-y-2">
                     <div className="flex items-start justify-between gap-2">
@@ -262,7 +274,7 @@ export default function PatientHomePage() {
                     <p className="text-xs font-semibold mb-1">
                       Documentos deste procedimento
                     </p>
-                    <ul className="space-y-1 text-sm">
+                    <ul className="space-y-1 text-sm flex flex-col gap-8">
                       {(proc.requiredDocuments || []).map((doc) => (
                         <li
                           key={doc.id}
@@ -283,20 +295,24 @@ export default function PatientHomePage() {
                           <div className="flex items-center gap-2">
                             <Badge
                               variant={statusBadgeVariant(doc.status)}
-                              size="sm"
+                              size="md"
                             >
                               {docStatusLabels[doc.status] || doc.status}
                             </Badge>
                             {(doc.status === "pendente" ||
                               doc.status === "rejeitado") && (
-                                <Button
-                                variant=""
-                            className="btn btn-xs btn-outline"
-                            onClick={() => handleUploadClick(proc.id, doc.id)}
-                            icon={faFileArrowUp}
-                          >
-                            Enviar
-                          </Button>
+                          //       <Button
+                          //       variant=""
+                          //   className="btn btn-xs btn-outline"
+                          //   onClick={() => handleUploadClick(proc.id, doc.id)}
+                          //   icon={faFileArrowUp}
+                          // >
+                          //   Enviar
+                          // </Button>
+                          <BrButton emphasis="primary" onClick={() => handleUploadClick(proc.id, doc.id)}>
+                          <FontAwesomeIcon icon={faFileArrowUp} className="mr-2" />
+                          Enviar
+                          </BrButton>
                             )}
                           </div>
                         </li>
@@ -307,6 +323,7 @@ export default function PatientHomePage() {
               ))}
             </div>
           )}
+        </div>
         </div>
       </section>
     </div>
