@@ -183,6 +183,7 @@ export default function SecretaryDashboard() {
                 {isLoading ? (
                   <tr>
                     <td colSpan={4} className="text-center opacity-70">
+                      <span className="loading loading-spinner loading-md mr-4"></span>
                       Carregando histórico...
                     </td>
                   </tr>

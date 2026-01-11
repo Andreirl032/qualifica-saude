@@ -119,12 +119,14 @@ export default function ProfessionalHomePage() {
 
       {isLoading ? (
         <div className="text-center py-12 text-base-content/70">
+          <span className="loading loading-spinner loading-md mr-4"></span>
           Carregando documentos...
         </div>
       ) : (
         <div className="space-y-8 gap-15 flex-col flex">
-          <section className="space-y-3">
-            <div className="flex items-center justify-between border-b border-gray-300 mb-6 pb-2">
+          <section className="space-y-3  collapse collapse-arrow w-full">
+            <input type="checkbox" />
+            <div className="flex items-center justify-between border-b border-gray-300 mb-6 pb-2 collapse-title">
               <h2 className="text-lg font-semibold">Pendentes para análise</h2>
               <Badge variant="warning">{pending.length} pendentes</Badge>
             </div>
@@ -133,7 +135,7 @@ export default function ProfessionalHomePage() {
                 Nenhum documento aguarda qualificação neste momento.
               </Alert>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto collapse-content">
                 <table className="table table-zebra">
                   <thead>
                     <tr>
@@ -191,8 +193,9 @@ export default function ProfessionalHomePage() {
             )}
           </section>
 
-          <section className="space-y-3">
-            <div className="flex items-center justify-between border-b border-gray-300 mb-6 pb-2">
+          <section className="space-y-3 collapse collapse-arrow w-full">
+            <input type="checkbox" />
+            <div className="flex items-center justify-between border-b border-gray-300 mb-6 pb-2 collapse-title">
               <h2 className="text-lg font-semibold">Histórico recente</h2>
               <Badge variant="info">{completed.length} concluídos</Badge>
             </div>
@@ -201,7 +204,7 @@ export default function ProfessionalHomePage() {
                 Ainda não há documentos aprovados ou rejeitados.
               </Alert>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto collapse-content">
                 <table className="table table-compact">
                   <thead>
                     <tr>

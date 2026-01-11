@@ -160,6 +160,7 @@ export default function PatientHomePage() {
 
           {isLoading ? (
             <div className="text-center opacity-70">
+              <span className="loading loading-spinner loading-md mr-4"></span>
               Carregando seus documentos...
             </div>
           ) : pendingDocuments.length === 0 ? (
@@ -230,6 +231,7 @@ export default function PatientHomePage() {
 
           {isLoading ? (
             <div className="text-center opacity-70">
+              <span className="loading loading-spinner loading-md mr-4"></span>
               Carregando seus procedimentos...
             </div>
           ) : procedures.length === 0 ? (
