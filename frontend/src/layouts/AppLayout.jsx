@@ -6,6 +6,19 @@ import { BrButton } from "@govbr-ds/webcomponents-react";
 export default function AppLayout() {
   const { user, logout } = useAuth();
 
+  const convertUserTypeToString = (user) => {
+    if(user==="paciente"){
+      return "Paciente";
+    }
+    else if(user==="profissional"){
+      return "Profissional";
+    }
+    else if(user==="secretario"){
+      return "Secretário(a)";
+    }
+    return user;
+  }
+
   return (
     <div className="min-h-screen bg-base-200">
       <div className="navbar bg-base-700 flex py-5 relative">
@@ -27,7 +40,7 @@ export default function AppLayout() {
         <div className="flex items-center gap-3 ml-auto mr-5">
           {user && (
             <span className="px-3 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-              {user.role}
+              {convertUserTypeToString(user.role)}
             </span>)}
           <BrButton emphasis="secondary" onClick={logout}>
             Sair

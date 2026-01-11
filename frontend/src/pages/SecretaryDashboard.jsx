@@ -6,6 +6,8 @@ import { Alert } from "../components/Alert.jsx";
 import { Badge } from "../components/Badge.jsx";
 
 import { faFileImport, faFileExport } from "@fortawesome/free-solid-svg-icons";
+import { BrButton } from "@govbr-ds/webcomponents-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function SecretaryDashboard() {
   const [history, setHistory] = useState([]);
@@ -130,36 +132,30 @@ export default function SecretaryDashboard() {
               onChange={handleFileChange}
               className="hidden"
             />
-            <Button
-              variant="primary"
-              onClick={handleImportClick}
-              disabled={isUploading}
-              icon={faFileImport}
-            >
-              {isUploading ? "Enviando..." : "Importar CSV"}
-            </Button>
+              <BrButton emphasis="primary" onClick={handleImportClick} disabled={isUploading}>
+                          <FontAwesomeIcon icon={faFileImport} className="mr-2" />
+                          {isUploading ? "Enviando..." : "Importar CSV"}
+                          </BrButton>
           </div>
           <div className="flex-1 space-y-2">
             <span className="font-semibold">Exportar histórico</span>
             <p className="text-sm text-base-content/70">
               Faça download do histórico de uploads em formato CSV.
             </p>
-            <Button
-              variant="outline"
-              onClick={handleExportClick}
-              disabled={history.length === 0}
-              icon={faFileExport}
-            >
-              Exportar CSV
-            </Button>
+            <BrButton emphasis="secondary" onClick={handleExportClick} disabled={history.length === 0}>
+                          <FontAwesomeIcon icon={faFileExport} className="mr-2" />
+                          Exportar CSV
+                          </BrButton>
           </div>
         </div>
       </div>
 
       <section className="card bg-base-100 shadow-md">
-        <div className="card-body space-y-4">
-          <div>
-            <h2 className="card-title">Histórico de envios CSV</h2>
+        <div className="card-body space-y-4 p-0">
+          <div className="collapse collapse-arrow w-full">
+          <input type="checkbox"/>
+          <div className="collapse-title">
+            <h2 className="card-title">Histórico de envios CSV ({history.length})</h2>
             <p className="text-sm text-base-content/70">
               Registros de processamento de arquivos CSV.
             </p>
@@ -169,7 +165,7 @@ export default function SecretaryDashboard() {
               <span>{historyError}</span>
             </Alert>
           )}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto collapse-content">
             <table className="table">
               <thead>
                 <tr>
@@ -215,6 +211,7 @@ export default function SecretaryDashboard() {
             </table>
           </div>
         </div>
+      </div>
       </section>
     </div>
   );
