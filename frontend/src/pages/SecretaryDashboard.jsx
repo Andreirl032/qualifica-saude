@@ -185,7 +185,7 @@ export default function SecretaryDashboard() {
                   </tr>
                 ) : history.length ? (
                   history.map((entry) => (
-                    <tr key={entry.id}>
+                    <tr key={entry.id} className="hover:bg-gray-100 transition-all">
                       <td>{entry.filename}</td>
                       <td>{entry.rows}</td>
                       <td>

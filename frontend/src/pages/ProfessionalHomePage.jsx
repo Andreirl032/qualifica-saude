@@ -149,7 +149,7 @@ export default function ProfessionalHomePage() {
                   </thead>
                   <tbody>
                     {pending.map((doc) => (
-                      <tr key={doc.id}>
+                      <tr key={doc.id} className="hover:bg-gray-100 transition-all">
                         <td>
                           <div className="font-semibold">{doc.patientName}</div>
                           <div className="text-xs text-base-content/70">
@@ -217,7 +217,7 @@ export default function ProfessionalHomePage() {
                   </thead>
                   <tbody>
                     {completed.map((doc) => (
-                      <tr key={doc.id}>
+                      <tr key={doc.id} className="hover:bg-gray-100 transition-all">
                         <td>{doc.documentName}</td>
                         <td>
                           <div className="font-semibold">{doc.patientName}</div>
