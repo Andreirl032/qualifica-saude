@@ -157,7 +157,7 @@ export default function LoginPage() {
                   message={errors.email?.message}
                   placeholder="contato@email.com"
                   required
-                  className='scale-110'
+                  className='scale-120'
                   {...register("email")}
                 />
             </FormField>
@@ -179,7 +179,7 @@ export default function LoginPage() {
                 message={errors.password?.message}
                 error={!!errors.password}
                 required
-                className='scale-110'
+                className='scale-120'
                 {...register("password")}
               />
             </FormField>
@@ -214,7 +214,7 @@ export default function LoginPage() {
                   placeholder="000.000.000-00"
                   maxLength={14}
                   required
-                  className='scale-110'
+                  className='scale-120'
                   {...registerCpf("cpf")}
                 />
             </FormField>
@@ -228,7 +228,7 @@ export default function LoginPage() {
                 message={cpfErrors.password?.message}
                 error={!!cpfErrors.password}
                 required
-                className='scale-110'
+                className='scale-120'
                 {...registerCpf("password")}
               />
             </FormField>
